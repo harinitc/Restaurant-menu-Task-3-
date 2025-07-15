@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Epicurean Haven - Restaurant Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #e63946;
+      --secondary: #f1faee;
+      --accent: #a8dadc;
+      --dark: #1d3557;
+      --light: #f8f9fa;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+    body {
+      background: var(--secondary);
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+    header {
+      background: var(--dark);
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      background: url('https://placehold.co/1920x1080') center/cover;
+      opacity: 0.2;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+    }
+    header h1, header p {
+      position: relative;
+      z-index: 1;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .menu-intro {
+      text-align: center;
+      margin: 30px auto;
+      background: var(--light);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .menu-categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .category-btn {
+      padding: 10px 20px;
+      border: none;
+      background: var(--accent);
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+    .category-btn.active,
+    .category-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .menu-item {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .menu-item:hover {
+      transform: translateY(-5px);
+    }
+    .item-image img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .item-details {
+      padding: 15px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .item-description {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .tag {
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      border-radius: 4px;
+      background: var(--accent);
+    }
+    .tag.vegetarian { background: #4caf50; color: white; }
+    .tag.gf { background: #ffc107; }
+    .tag.signature { background: #6f42c1; color: white; }
+    .add-to-cart {
+      background: var(--primary);
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: var(--dark);
+      color: white;
+      margin-top: 40px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 8px;
+      overflow: hidden;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      background: var(--primary);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .modal-body img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    .close-btn {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Epicurean Haven</h1>
+    <p>Experience gourmet dishes with seasonal ingredients</p>
+  </header>
+
+  <div class="container">
+    <div class="menu-intro">
+      <h2>Our Menu</h2>
+      <p>Carefully curated dishes crafted by our chefs using the freshest ingredients.</p>
+    </div>
+
+    <div class="menu-categories">
+      <button class="category-btn active" data-category="all">All</button>
+      <button class="category-btn" data-category="starters">Starters</button>
+      <button class="category-btn" data-category="mains">Mains</button>
+      <button class="category-btn" data-category="desserts">Desserts</button>
+      <button class="category-btn" data-category="drinks">Drinks</button>
+      <button class="category-btn" data-category="specials">Specials</button>
+    </div>
+
+    <div class="menu-items" id="menu-items-container"></div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Epicurean Haven. All rights reserved.</p>
+  </footer>
+
+  <div class="modal" id="item-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Item Name</h3>
+        <button class="close-btn" id="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img id="modal-image" src="" alt="">
+        <p id="modal-description"></p>
+        <div class="item-tags" id="modal-tags"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const items = [
+      {
+        id: 1, name: "Truffle Arancini", category: "starters", price: "$12",
+        description: "Crispy risotto balls with mozzarella and truffle aioli.",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSExN6lUDVXss0WhYMaZ_UWjKVoH5arryJEwQ&s",
+        tags: ["vegetarian", "signature"]
+      },
+      {
+        id: 2, name: "Miso Black Cod", category: "mains", price: "$36",
+        description: "Marinated black cod with jasmine rice and shiitake mushrooms.",
+        image: "https://www.justonecookbook.com/wp-content/uploads/2024/10/Miso-Cod-Black-Cod-with-Miso-3-I-1.jpg",
+        tags: ["gf"]
+      },
+      {
+        id: 3, name: "Chocolate Soufflé", category: "desserts", price: "$14",
+        description: "Molten chocolate center with vanilla bean ice cream.",
+        image: "https://media-cdn.tripadvisor.com/media/photo-m/1280/19/a9/47/eb/hot-chocolate-souffle.jpg",
+        tags: ["vegetarian"]
+      },
+      {
+        id: 4, name: "Chef's Tasting Menu", category: "specials", price: "$95",
+        description: "Chef's seasonal tasting menu with wine pairing options.",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3OwZAZcD0qJhmCCp_oXj2TY8d-KD1DtB0QIIkDa3n9M1c9rxTkO-dfkKD1Wf4Pf4FrQ8&usqp=CAU",
+        tags: ["signature"]
+      }
+    ];
+
+    const container = document.getElementById("menu-items-container");
+    const modal = document.getElementById("item-modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalImage = document.getElementById("modal-image");
+    const modalDescription = document.getElementById("modal-description");
+    const modalTags = document.getElementById("modal-tags");
+    const closeModalBtn = document.getElementById("close-modal");
+
+    function renderMenu(category = "all") {
+      container.innerHTML = "";
+      const filtered = category === "all" ? items : items.filter(i => i.category === category);
+      filtered.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "menu-item";
+        div.innerHTML = `
+          <div class="item-image"><img src="${item.image}" alt="${item.name}"></div>
+          <div class="item-details">
+            <div class="item-header">
+              <span>${item.name}</span>
+              <span>${item.price}</span>
+            </div>
+            <p class="item-description">${item.description}</p>
+            <div class="item-tags">
+              ${item.tags.map(tag => `<span class="tag ${tag}">${tag}</span>`).join('')}
+            </div>
+            <button class="add-to-cart" data-id="${item.id}"><i class="fas fa-plus"></i> Add</button>
+          </div>
+        `;
+        div.querySelector(".add-to-cart").addEventListener("click", (e) => {
+          e.stopPropagation();
+          alert(`Added ${item.name} to your order!`);
+        });
+        div.addEventListener("click", (e) => {
+          if (!e.target.closest(".add-to-cart")) {
+            showDetails(item);
+          }
+        });
+        container.appendChild(div);
+      });
+    }
+
+    function showDetails(item) {
+      modalTitle.textContent = item.name;
+      modalImage.src = item.image;
+      modalDescription.textContent = item.description;
+      modalTags.innerHTML = item.tags.map(tag => `<span class="tag ${tag}">${tag}</span>`).join('');
+      modal.style.display = "flex";
+    }
+
+    document.querySelectorAll(".category-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderMenu(btn.dataset.category);
+      });
+    });
+
+    closeModalBtn.onclick = () => modal.style.display = "none";
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+    document.onkeydown = (e) => { if (e.key === "Escape") modal.style.display = "none"; };
+
+    renderMenu();
+  </script>
+</body>
+</html>
